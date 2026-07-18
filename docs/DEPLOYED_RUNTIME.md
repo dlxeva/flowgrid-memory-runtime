@@ -4,6 +4,10 @@
 
 `https://ie23uv52be.execute-api.us-east-1.amazonaws.com/demo/runtime/`
 
+## Public browser demo
+
+`https://dlxeva.github.io/flowgrid-memory-runtime/`
+
 The endpoint is a public, read-only snapshot API for synthetic demo projects.
 `GET` requests do not create projects or write to CockroachDB. Lambda mutation
 requests require a deployment-time runtime token, which is never included in

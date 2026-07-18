@@ -10,10 +10,10 @@
 - Completed the owner-approved $3 AWS budget alert and deployed the `flowgrid-memory-runtime` stack in `us-east-1`.
 - Verified the deployed Lambda -> CockroachDB -> S3 synthetic lifecycle: `D-001` confirmed, `P-001` pending, then `D-001` superseded by confirmed `D-002` after qualifying evidence.
 - Independently read the deployed final snapshot through the public unauthenticated `GET` path; the browser build remains read-only and receives no database URL or runtime token.
+- Published the browser demo at `https://dlxeva.github.io/flowgrid-memory-runtime/`; verified HTTP 200, the deployed API URL in the static bundle, and the absence of database URL and runtime write token strings.
 
 ## Next
 
-- Publish and validate the GitHub Pages browser demo against the deployed read-only endpoint.
 - Update the final video with the deployed AWS path and publish the submission evidence.
 - Delete the stack and SAM packaging artifacts after the hackathon demonstration window.
 

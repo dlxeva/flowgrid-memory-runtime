@@ -20,6 +20,10 @@ This repository provides a local, synthetic demo of the judgment lifecycle. It r
 See [docs/VALIDATION.md](docs/VALIDATION.md) for the live database evidence and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the runtime contract.
 The deployed API evidence and cleanup boundary are in [docs/DEPLOYED_RUNTIME.md](docs/DEPLOYED_RUNTIME.md).
 
+## Public demo
+
+The browser demo is live at [dlxeva.github.io/flowgrid-memory-runtime](https://dlxeva.github.io/flowgrid-memory-runtime/). It embeds only the public read-only runtime endpoint; the CockroachDB URL and runtime write token are not present in the Pages build.
+
 For the Hackathon description, video script, visual evidence, and remaining submission gates, see [docs/SUBMISSION.md](docs/SUBMISSION.md).
 
 ## Run the demo

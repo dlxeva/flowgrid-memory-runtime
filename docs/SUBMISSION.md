@@ -70,21 +70,19 @@ Do not record or publish the final video until the final segment can show the de
 | Public, open-source repository with license and setup instructions | Public repository, MIT license, README, local demo and tests | Ready |
 | Agentic application with CockroachDB persistent memory | Live synthetic schema, lifecycle rows, vector index, Managed MCP inspection | Ready |
 | Meaningful AWS integration | Deployed Lambda, API Gateway, private S3 trace bucket, and end-to-end CockroachDB verification | Ready |
-| Functional public demo URL | GitHub Pages workflow configured; public synthetic project initialization and first Pages deployment remain | In progress |
+| Functional public demo URL | GitHub Pages build reads the deployed public snapshot without browser credentials | Ready: https://dlxeva.github.io/flowgrid-memory-runtime/ |
 | Public video under 3 minutes | Script only | Blocked: record after deployment |
 | CockroachDB tool explanation | This document and `VALIDATION.md` | Ready |
-| AWS service explanation | This document distinguishes implemented from deployed services | Draft only |
+| AWS service explanation | This document distinguishes deployed Lambda, API Gateway, private S3 traces, and read-only browser access | Ready |
 
 ## Final submission checklist
 
-1. Initialize the separate public synthetic project through the protected runtime write path.
-2. Run the GitHub Pages workflow and record the resulting free demo URL.
-3. Record the under-three-minute video using the script above, including CockroachDB memory evidence and the deployed Lambda write path.
-4. Add the final demo and video URLs below, then copy the project description into Devpost.
+1. Record the under-three-minute video using the script above, including CockroachDB memory evidence and the deployed Lambda write path.
+2. Add the final video URL below, then copy the project description into Devpost.
 
 ```text
 Repository URL: https://github.com/dlxeva/flowgrid-memory-runtime
-Demo URL: PENDING_GITHUB_PAGES_DEPLOYMENT
+Demo URL: https://dlxeva.github.io/flowgrid-memory-runtime/
 Video URL: PENDING_RECORDING
 ```
 

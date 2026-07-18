@@ -26,7 +26,7 @@ Ship a synthetic, publicly demonstrable CockroachDB memory runtime that protects
 
 ## Unconfirmed
 
-- GitHub Pages public demo deployment and final video update.
+- Final video update and Devpost submission.
 - Independent judge or design-partner response.
 - Independent judge or design-partner response.
 
@@ -34,11 +34,11 @@ Ship a synthetic, publicly demonstrable CockroachDB memory runtime that protects
 
 - The browser demo must remain read-only; the runtime write token must never enter the Pages build.
 - The deployed stack creates billable services after free-tier/credit limits; the $3 alert is monitoring, not a hard cost cap.
-- Public product readiness remains unproven until a reviewer can use the hosted demo.
+- Public product readiness remains unproven until an independent reviewer or judge responds to the hosted demo.
 
 ## Next Highest Priority Action
 
-Publish the configured GitHub Pages build, validate the hosted browser against the deployed read-only API, then update the final video and Devpost evidence.
+Update the final video with the deployed AWS path, publish it, then submit the public repository, demo, and video evidence to Devpost.
 
 ---
 
