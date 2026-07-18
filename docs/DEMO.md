@@ -45,7 +45,7 @@ Click **Add conversion evidence**. The runtime preserves `D-001` as `superseded`
 | CockroachDB schema and lifecycle data | Live in the existing free Basic cluster using synthetic records only. |
 | CockroachDB vector index | Live and verified on `memory_embeddings`. |
 | Managed MCP inspection | Live read and narrowly approved schema/data setup validation. |
-| Lambda API and S3 trace storage | Code is present but intentionally not deployed. |
+| Lambda API and S3 trace storage | Deployed and verified against the synthetic CockroachDB lifecycle. |
 
 ## Reviewer checks
 
@@ -61,9 +61,9 @@ The test suite checks the protected-decision invariant, cloud snapshot contract,
 After a separately approved Lambda deployment, configure:
 
 ```bash
-VITE_RUNTIME_API_URL=https://<runtime-api-url>
-# Optional: defaults to demo-launch, which is initialized by the deployment smoke test.
-VITE_RUNTIME_PROJECT_SLUG=demo-launch
+VITE_RUNTIME_API_URL=https://ie23uv52be.execute-api.us-east-1.amazonaws.com/demo/runtime/
+# The public demo reads the synthetic project created by the protected verifier.
+VITE_RUNTIME_PROJECT_SLUG=smoke-1784397663751
 ```
 
 The **Load CockroachDB state** button then loads the same `RuntimeState` contract from the API. The browser never receives a CockroachDB connection URL or write token.

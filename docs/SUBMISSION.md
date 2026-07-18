@@ -47,7 +47,7 @@ The live cluster evidence is recorded in [VALIDATION.md](VALIDATION.md).
 
 The repository includes an AWS SAM template for a controlled Lambda write API, API Gateway, and a private S3 trace bucket. For this synthetic demo, the CockroachDB URL is supplied as an encrypted `NoEcho` deployment parameter rather than through a recurring Secrets Manager resource. The Lambda code performs the lifecycle transaction and returns the same Runtime Snapshot contract consumed by the browser.
 
-**Not yet deployed:** no AWS resource, public API URL, or S3 trace bucket has been created. Before final submission, deploy the reviewed SAM stack, record the resulting Demo URL, and show Lambda writing the synthetic lifecycle to CockroachDB. This is required by the hackathon rules because AWS must be meaningfully integrated.
+**Deployed and verified:** the SAM stack is live in `us-east-1` with Lambda, API Gateway, a private S3 trace bucket, and a seven-day CloudWatch log group. The deployed verifier completed the full synthetic lifecycle against CockroachDB. The public read-only API is `https://ie23uv52be.execute-api.us-east-1.amazonaws.com/demo/runtime/`; the browser build never receives the runtime write token. See [DEPLOYED_RUNTIME.md](DEPLOYED_RUNTIME.md).
 
 ## 90-second video script
 
@@ -69,22 +69,22 @@ Do not record or publish the final video until the final segment can show the de
 | --- | --- | --- |
 | Public, open-source repository with license and setup instructions | Public repository, MIT license, README, local demo and tests | Ready |
 | Agentic application with CockroachDB persistent memory | Live synthetic schema, lifecycle rows, vector index, Managed MCP inspection | Ready |
-| Meaningful AWS integration | SAM template and Lambda implementation only | Blocked: deploy required |
-| Functional public demo URL | Local Vite demo only | Blocked: deploy or host required |
+| Meaningful AWS integration | Deployed Lambda, API Gateway, private S3 trace bucket, and end-to-end CockroachDB verification | Ready |
+| Functional public demo URL | GitHub Pages workflow configured; public synthetic project initialization and first Pages deployment remain | In progress |
 | Public video under 3 minutes | Script only | Blocked: record after deployment |
 | CockroachDB tool explanation | This document and `VALIDATION.md` | Ready |
 | AWS service explanation | This document distinguishes implemented from deployed services | Draft only |
 
 ## Final submission checklist
 
-1. Run the reviewed AWS deployment and capture its resource identifiers and estimated free-tier cost boundary.
-2. Set `VITE_RUNTIME_API_URL` to the deployed read-only endpoint and publish a free, functional demo URL.
+1. Initialize the separate public synthetic project through the protected runtime write path.
+2. Run the GitHub Pages workflow and record the resulting free demo URL.
 3. Record the under-three-minute video using the script above, including CockroachDB memory evidence and the deployed Lambda write path.
 4. Add the final demo and video URLs below, then copy the project description into Devpost.
 
 ```text
 Repository URL: https://github.com/dlxeva/flowgrid-memory-runtime
-Demo URL: PENDING_AWS_DEPLOYMENT
+Demo URL: PENDING_GITHUB_PAGES_DEPLOYMENT
 Video URL: PENDING_RECORDING
 ```
 

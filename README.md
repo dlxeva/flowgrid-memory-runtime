@@ -15,9 +15,10 @@ This repository provides a local, synthetic demo of the judgment lifecycle. It r
 
 - The browser demo runs the lifecycle locally with deterministic state transitions.
 - The CockroachDB Basic cluster contains the same synthetic schema, lifecycle data, and a live vector index.
-- The Lambda code maps CockroachDB rows into the same runtime snapshot that the browser consumes. Deployment remains optional because it creates AWS resources and requires credentials.
+- The deployed Lambda runtime maps CockroachDB rows into the same read-only snapshot that the browser consumes. Its mutation token remains outside the browser build.
 
 See [docs/VALIDATION.md](docs/VALIDATION.md) for the live database evidence and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the runtime contract.
+The deployed API evidence and cleanup boundary are in [docs/DEPLOYED_RUNTIME.md](docs/DEPLOYED_RUNTIME.md).
 
 For the Hackathon description, video script, visual evidence, and remaining submission gates, see [docs/SUBMISSION.md](docs/SUBMISSION.md).
 
@@ -56,7 +57,7 @@ CockroachDB Vector Indexing retrieves related prior judgments. The Lambda runtim
 
 ## Deploy the synthetic cloud demo
 
-See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) only when a separate cost review approves deployment. It uses an AWS Lambda write path, CockroachDB Cloud for durable judgment state and vector recall, CockroachDB Managed MCP for agent inspection, and a private S3 bucket for synthetic run traces.
+The deployed runtime uses an AWS Lambda write path, CockroachDB Cloud for durable judgment state and vector recall, CockroachDB Managed MCP for agent inspection, and a private S3 bucket for synthetic run traces.
 
 The reviewed demo cost boundary is in [docs/COST_PLAN.md](docs/COST_PLAN.md):
 no fixed-capacity AWS services, an expected $0 short-lived demo cost, and a

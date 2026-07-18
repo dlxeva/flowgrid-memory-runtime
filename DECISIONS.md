@@ -158,3 +158,42 @@ The URL remains a CloudFormation deployment parameter; this is not appropriate f
 ---
 
 *决策 | Source: User confirmation in this session: no Secrets Manager; reduce fixed cost.*
+
+## D-006 | Approve a short-lived synthetic AWS deployment under a $3 alert
+
+### 决策时间
+2026-07-19
+
+### 所属阶段
+执行
+
+### 决策背景
+Local implementation, SAM validation, and a cost plan were complete. The owner approved the reviewed $3 monthly AWS budget alert and deployment of the synthetic hackathon runtime.
+
+### 核心问题
+How to prove the Lambda-to-CockroachDB lifecycle without exposing private data or committing to fixed cloud spend.
+
+### 备选方案
+A. Leave AWS integration as local code only、Use a fixed-capacity service、Deploy the reviewed serverless synthetic stack
+
+### 最终决策
+Deploy the reviewed serverless stack in `us-east-1` with synthetic data only, a $3 monthly budget alert, seven-day log and trace retention, and a public read-only API.
+
+### 决策理由
+The hackathon requires meaningful AWS and CockroachDB integration plus a functional demo. Lambda, API Gateway, and a private expiring trace bucket provide verifiable integration while avoiding fixed-capacity resources.
+
+### 放弃理由
+Leaving the stack local would not satisfy the deployed-demo requirement. Fixed-capacity infrastructure would add avoidable cost and operational burden.
+
+### 风险判断
+The budget alert is monitoring rather than a hard cap. The CockroachDB URL and runtime write token must remain outside Git and the public browser build. The stack must be deleted after the demonstration window.
+
+### 后续验证
+The deployed verifier completed `D-001` confirmed -> `P-001` pending -> `D-001` superseded by `D-002`; an unauthenticated GET returned the final synthetic snapshot.
+
+### 复盘入口
+Reopen if the public read-only API creates abuse or cost pressure, the hackathon requires a different hosting model, or the project moves beyond synthetic data.
+
+---
+
+*决策 | Source: Owner-approved budget alert, CloudShell deployment output, and deployed verifier result.*

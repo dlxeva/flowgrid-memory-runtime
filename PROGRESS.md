@@ -7,14 +7,17 @@
 - Hardened Lambda reads so GET does not initialize state and unauthorized POST requests do not open a database connection.
 - Aligned the runtime's vector recall operator and migration with the live `vector_l2_ops` index; unit, build, and SAM validation pass.
 - Rendered a synthetic HTML/CSS demo video using an owner-provided voice clone; the current cut is intentionally frozen for later visual refinement.
+- Completed the owner-approved $3 AWS budget alert and deployed the `flowgrid-memory-runtime` stack in `us-east-1`.
+- Verified the deployed Lambda -> CockroachDB -> S3 synthetic lifecycle: `D-001` confirmed, `P-001` pending, then `D-001` superseded by confirmed `D-002` after qualifying evidence.
+- Independently read the deployed final snapshot through the public unauthenticated `GET` path; the browser build remains read-only and receives no database URL or runtime token.
 
 ## Next
 
-- Authenticate AWS CLI or CloudShell without committing credentials.
-- Run the read-only preflight and perform a cost review before deployment.
-- Deploy and verify the real Lambda -> CockroachDB -> S3 synthetic path, then update the video and submission evidence.
+- Publish and validate the GitHub Pages browser demo against the deployed read-only endpoint.
+- Update the final video with the deployed AWS path and publish the submission evidence.
+- Delete the stack and SAM packaging artifacts after the hackathon demonstration window.
 
 ---
 
 *Created: 2026-07-18T18:28:52*
-*Last Updated: 2026-07-18T18:28:52*
+*Last Updated: 2026-07-19T02:12:00+08:00*
