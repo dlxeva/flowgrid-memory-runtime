@@ -21,6 +21,8 @@ describe("synthetic artifact retention", () => {
     expect(template).toMatch(/DemoArtifactsBucket:[\s\S]*?DeletionPolicy: Delete/);
     expect(template).toMatch(/DemoArtifactsBucket:[\s\S]*?UpdateReplacePolicy: Delete/);
     expect(template).toMatch(/LifecycleConfiguration:[\s\S]*?Id: expire-synthetic-traces[\s\S]*?ExpirationInDays: 7/);
+    expect(template).toMatch(/MemoryRuntimeLogGroup:[\s\S]*?RetentionInDays: 7/);
+    expect(template).toMatch(/MemoryRuntimeLogGroup:[\s\S]*?DeletionPolicy: Delete/);
   });
 });
 
