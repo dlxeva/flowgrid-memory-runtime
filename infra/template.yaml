@@ -1,0 +1,79 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: FlowGrid Memory Runtime hackathon demo
+
+Parameters:
+  DatabaseUrlSecretArn:
+    Type: String
+    Description: ARN of a Secrets Manager secret containing the CockroachDB connection URL.
+  RuntimeWriteToken:
+    Type: String
+    NoEcho: true
+    MinLength: 24
+    Description: Token required for Lambda mutation requests. Keep this out of the public web client.
+
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Timeout: 15
+    MemorySize: 512
+    Architectures:
+      - arm64
+
+Resources:
+  DemoArtifactsBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  MemoryRuntimeApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: demo
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'content-type,x-runtime-token'"
+        AllowOrigin: "'*'"
+
+  MemoryRuntimeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../lambda/
+      Handler: app.handler
+      Environment:
+        Variables:
+          ARTIFACT_BUCKET: !Ref DemoArtifactsBucket
+          DATABASE_URL_SECRET_ARN: !Ref DatabaseUrlSecretArn
+          RUNTIME_WRITE_TOKEN: !Ref RuntimeWriteToken
+      Policies:
+        - S3WritePolicy:
+            BucketName: !Ref DemoArtifactsBucket
+        - Statement:
+            Effect: Allow
+            Action: secretsmanager:GetSecretValue
+            Resource: !Ref DatabaseUrlSecretArn
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MemoryRuntimeApi
+            Path: /runtime/{proxy+}
+            Method: ANY
+
+Outputs:
+  RuntimeApiUrl:
+    Description: Memory Runtime API endpoint.
+    Value: !Sub "https://${MemoryRuntimeApi}.execute-api.${AWS::Region}.amazonaws.com/demo/runtime/"
+  DemoArtifactsBucketName:
+    Description: S3 bucket holding synthetic run traces.
+    Value: !Ref DemoArtifactsBucket

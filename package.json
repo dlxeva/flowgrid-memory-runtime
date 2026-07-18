@@ -7,15 +7,20 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:lambda": "vitest run lambda/decision-rules.test.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1090.0",
+    "@aws-sdk/client-secrets-manager": "^3.1090.0",
     "@vitejs/plugin-react": "latest",
-    "vite": "latest",
+    "pg": "^8.22.0",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "vite": "latest"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.162",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "typescript": "latest",
