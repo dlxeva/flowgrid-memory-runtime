@@ -17,12 +17,11 @@ This verifies that the current free-tier cluster can create and query the `VECTO
 - Cluster binding: current AWS Jakarta Basic cluster
 - OAuth scope: `mcp:read`
 - Local tool allowlist: `list_clusters`, `get_cluster`, `list_databases`, `list_tables`, `get_table_schema`, `select_query`, `explain_query`, and `show_running_queries`
-- Result: OAuth login completed successfully after the earlier broad credential was removed.
+- Result: OAuth login completed successfully after the earlier broad credential was removed. A live read-only query returned the existing `defaultdb` database and confirmed that it has no tables.
 
 The runtime keeps mutation tools out of the Codex MCP configuration. Application writes stay in the separately reviewed Lambda path.
 
 ## Remaining validation gates
 
-1. Managed MCP authentication and read-only schema inspection.
-2. Synthetic schema application and `VECTOR` index creation.
-3. AWS deployment after a separate zero-cost review.
+1. Synthetic schema application and `VECTOR` index creation.
+2. AWS deployment after a separate zero-cost review.
