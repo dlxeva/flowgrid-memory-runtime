@@ -58,6 +58,10 @@ CockroachDB Vector Indexing retrieves related prior judgments. The Lambda runtim
 
 See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) only when a separate cost review approves deployment. It uses an AWS Lambda write path, CockroachDB Cloud for durable judgment state and vector recall, CockroachDB Managed MCP for agent inspection, and a private S3 bucket for synthetic run traces.
 
+The reviewed demo cost boundary is in [docs/COST_PLAN.md](docs/COST_PLAN.md):
+no fixed-capacity AWS services, an expected $0 short-lived demo cost, and a
+recommended $3 AWS alert ceiling before deployment.
+
 ## Scope and disclosure
 
 This is a separate project created for the CockroachDB x AWS Hackathon during its submission period. FlowGrid is a pre-existing open-source local project-state protocol and is disclosed as the conceptual basis. This prototype does not copy real project ledgers, user sessions, customer data, or private evaluation material.

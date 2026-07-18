@@ -10,6 +10,7 @@
 > 每加一个素材文件，在这里登记一行。格式：`- [文件名](文件名) — 一句话说明`
 
 - [ARCHITECTURE.md](ARCHITECTURE.md) — 浏览器、Lambda、CockroachDB 与 S3 的运行时边界。
+- [COST_PLAN.md](COST_PLAN.md) — 黑客松演示的零固定成本边界、预算上限与清理规则。
 - [DEMO.md](DEMO.md) — 本地演示步骤、预期状态与审查方式。
 - [DEPLOYMENT.md](DEPLOYMENT.md) — 经成本审批后的 AWS 部署和自动验收步骤。
 - [SUBMISSION.md](SUBMISSION.md) — Devpost 提交文案、证据与未完成门槛。
