@@ -49,29 +49,12 @@ The stack creates a Lambda function, an API Gateway endpoint, and a private S3 b
 ## 4. Smoke test the deployed API
 
 ```bash
-API_URL=<CloudFormation RuntimeApiUrl output>
-TOKEN=<RuntimeWriteToken>
-
-curl "$API_URL?project=demo-launch"
-
-curl -X POST "$API_URL?project=demo-launch" \
-  -H "content-type: application/json" \
-  -H "x-runtime-token: $TOKEN" \
-  -d '{"action": "initialize_demo"}'
-
-curl -X POST "$API_URL?project=demo-launch" \
-  -H "content-type: application/json" \
-  -H "x-runtime-token: $TOKEN" \
-  -d '{
-    "action": "request_revision",
-    "decisionKey": "D-001",
-    "revisionKey": "P-001",
-    "request": "Try KOL promotion for launch.",
-    "proposal": "Run a KOL-heavy launch campaign."
-  }'
+RUNTIME_API_URL=<CloudFormation RuntimeApiUrl output> \
+RUNTIME_WRITE_TOKEN=<RuntimeWriteToken> \
+node scripts/verify-deployment.mjs
 ```
 
-The endpoint must return a pending revision. It may only return `applied` after a later `apply_evidence` action supplies qualifying evidence.
+The script creates a unique synthetic project and verifies the complete lifecycle: `D-001` is confirmed, `P-001` stays pending, qualifying evidence applies it, and `D-002` supersedes `D-001`. It prints only a status summary, never the write token or database URL.
 
 ## 5. Demo proof
 
