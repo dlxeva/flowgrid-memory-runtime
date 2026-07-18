@@ -23,8 +23,8 @@ Globals:
 Resources:
   DemoArtifactsBucket:
     Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
     Properties:
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
@@ -35,6 +35,13 @@ Resources:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - Id: expire-synthetic-traces
+            Status: Enabled
+            ExpirationInDays: 7
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
 
   MemoryRuntimeApi:
     Type: AWS::Serverless::Api

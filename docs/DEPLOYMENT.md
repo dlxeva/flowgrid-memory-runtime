@@ -44,7 +44,7 @@ sam deploy --guided \
     RuntimeWriteToken=<long-random-token>
 ```
 
-The stack creates a Lambda function, an API Gateway endpoint, and a private S3 bucket for synthetic run traces. It binds both the browser root path (`/runtime`) and future nested runtime paths (`/runtime/{proxy+}`). The write token protects `POST` operations. Keep it in a local shell variable for the live demo; never embed it in the public frontend.
+The stack creates a Lambda function, an API Gateway endpoint, and a private S3 bucket for synthetic run traces. The bucket has no public access, expires traces after seven days, and is deleted with the stack to avoid lingering demo-storage cost. It binds both the browser root path (`/runtime`) and future nested runtime paths (`/runtime/{proxy+}`). The write token protects `POST` operations. Keep it in a local shell variable for the live demo; never embed it in the public frontend.
 
 ## 4. Smoke test the deployed API
 

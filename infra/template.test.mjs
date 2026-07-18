@@ -14,6 +14,16 @@ describe("SAM runtime routes", () => {
   });
 });
 
+describe("synthetic artifact retention", () => {
+  it("deletes the demo bucket with the stack and expires traces after seven days", async () => {
+    const template = await readFile(templatePath, "utf8");
+
+    expect(template).toMatch(/DemoArtifactsBucket:[\s\S]*?DeletionPolicy: Delete/);
+    expect(template).toMatch(/DemoArtifactsBucket:[\s\S]*?UpdateReplacePolicy: Delete/);
+    expect(template).toMatch(/LifecycleConfiguration:[\s\S]*?Id: expire-synthetic-traces[\s\S]*?ExpirationInDays: 7/);
+  });
+});
+
 describe("CockroachDB vector contract", () => {
   it("declares the same L2 index operator used by the runtime", async () => {
     const migration = await readFile(migrationPath, "utf8");
