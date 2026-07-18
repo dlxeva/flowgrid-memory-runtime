@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseRuntimeSnapshot } from "./cloud-runtime";
+import { DEFAULT_RUNTIME_PROJECT_SLUG, parseRuntimeSnapshot, resolveRuntimeProjectSlug } from "./cloud-runtime";
 
 const snapshot = {
   projectSlug: "hackathon-demo",
@@ -17,5 +17,11 @@ describe("cloud runtime contract", () => {
 
   it("rejects an incomplete cloud response", () => {
     expect(() => parseRuntimeSnapshot({ frame: "missing lifecycle state" })).toThrow("invalid snapshot");
+  });
+
+  it("uses the same deployed project by default while allowing an explicit demo override", () => {
+    expect(DEFAULT_RUNTIME_PROJECT_SLUG).toBe("demo-launch");
+    expect(resolveRuntimeProjectSlug()).toBe("demo-launch");
+    expect(resolveRuntimeProjectSlug("  reviewer-demo  ")).toBe("reviewer-demo");
   });
 });

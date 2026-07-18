@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import type { Authority, RuntimeState } from "./domain";
-import { loadCloudRuntime } from "./cloud-runtime";
+import { loadCloudRuntime, resolveRuntimeProjectSlug } from "./cloud-runtime";
 import { applyConversionEvidence, createDemoState, proposeKolRevision, resume } from "./runtime";
 import "./styles.css";
 
@@ -12,6 +12,7 @@ function App() {
   const [cloudStatus, setCloudStatus] = useState("Offline demo runtime");
   const [loadingCloud, setLoadingCloud] = useState(false);
   const cloudRuntimeUrl = import.meta.env.VITE_RUNTIME_API_URL?.trim();
+  const cloudProjectSlug = resolveRuntimeProjectSlug(import.meta.env.VITE_RUNTIME_PROJECT_SLUG);
   const resumed = state.auditEvents.some((event) => event.action === "resumed");
   const pending = state.proposals.some((proposal) => proposal.status === "pending");
   const applied = state.proposals.some((proposal) => proposal.status === "applied");
@@ -21,7 +22,7 @@ function App() {
     setLoadingCloud(true);
     setCloudStatus("Loading CockroachDB-backed runtime…");
     try {
-      setState(await loadCloudRuntime(cloudRuntimeUrl, "hackathon-demo"));
+      setState(await loadCloudRuntime(cloudRuntimeUrl, cloudProjectSlug));
       setCloudStatus("CockroachDB-backed runtime");
     } catch (error) {
       setCloudStatus(error instanceof Error ? error.message : "Cloud runtime could not be loaded.");

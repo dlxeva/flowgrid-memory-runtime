@@ -1,5 +1,11 @@
 import type { RuntimeState } from "./domain";
 
+export const DEFAULT_RUNTIME_PROJECT_SLUG = "demo-launch";
+
+export function resolveRuntimeProjectSlug(value?: string): string {
+  return value?.trim() || DEFAULT_RUNTIME_PROJECT_SLUG;
+}
+
 function isRuntimeState(value: unknown): value is RuntimeState {
   if (!value || typeof value !== "object") return false;
   const state = value as Partial<RuntimeState>;

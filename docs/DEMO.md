@@ -62,6 +62,8 @@ After a separately approved Lambda deployment, configure:
 
 ```bash
 VITE_RUNTIME_API_URL=https://<runtime-api-url>
+# Optional: defaults to demo-launch, which is initialized by the deployment smoke test.
+VITE_RUNTIME_PROJECT_SLUG=demo-launch
 ```
 
 The **Load CockroachDB state** button then loads the same `RuntimeState` contract from the API. The browser never receives a CockroachDB connection URL or write token.
