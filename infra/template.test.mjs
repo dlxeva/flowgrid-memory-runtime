@@ -37,6 +37,15 @@ describe("demo deployment secrets", () => {
   });
 });
 
+describe("demo cost boundary", () => {
+  it("keeps the synthetic runtime serverless and free of fixed-capacity services", async () => {
+    const template = await readFile(templatePath, "utf8");
+
+    expect(template).not.toContain("ProvisionedConcurrencyConfig");
+    expect(template).not.toMatch(/AWS::(EC2::Instance|ECS::Service|RDS::DBInstance|RDS::DBCluster|ElasticLoadBalancing)/);
+  });
+});
+
 describe("CockroachDB vector contract", () => {
   it("declares the same L2 index operator used by the runtime", async () => {
     const migration = await readFile(migrationPath, "utf8");
