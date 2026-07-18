@@ -63,7 +63,13 @@ Resources:
             Action: secretsmanager:GetSecretValue
             Resource: !Ref DatabaseUrlSecretArn
       Events:
-        Api:
+        RuntimeRoot:
+          Type: Api
+          Properties:
+            RestApiId: !Ref MemoryRuntimeApi
+            Path: /runtime
+            Method: ANY
+        RuntimeProxy:
           Type: Api
           Properties:
             RestApiId: !Ref MemoryRuntimeApi
