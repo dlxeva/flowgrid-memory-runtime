@@ -26,6 +26,17 @@ describe("synthetic artifact retention", () => {
   });
 });
 
+describe("demo deployment secrets", () => {
+  it("uses encrypted Lambda environment variables without provisioning Secrets Manager", async () => {
+    const template = await readFile(templatePath, "utf8");
+
+    expect(template).toMatch(/DatabaseUrl:[\s\S]*?NoEcho: true/);
+    expect(template).toContain("DATABASE_URL: !Ref DatabaseUrl");
+    expect(template).not.toContain("AWS::SecretsManager");
+    expect(template).not.toContain("secretsmanager:");
+  });
+});
+
 describe("CockroachDB vector contract", () => {
   it("declares the same L2 index operator used by the runtime", async () => {
     const migration = await readFile(migrationPath, "utf8");

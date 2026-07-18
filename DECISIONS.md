@@ -119,3 +119,42 @@ The synthetic embedding is only a runtime proof and does not claim production se
 ---
 
 *原则 | Source: Live CockroachDB schema inspection and official CockroachDB vector-index documentation*
+
+## D-005 | Use deploy-time encrypted Lambda environment varia
+
+### 决策时间
+2026-07-19
+
+### 所属阶段
+执行
+
+### 决策背景
+用户明确指令：直接写入决策日志（`flg decision add`）。
+
+### 核心问题
+项目推进中的关键判断
+
+### 备选方案
+A. AWS Secrets Manager、create a second CockroachDB cluster in us-east-1
+
+### 最终决策
+Use deploy-time encrypted Lambda environment variables instead of AWS Secrets Manager for the synthetic hackathon demo.
+
+### 决策理由
+Avoid the recurring Secrets Manager charge while keeping the CockroachDB URL out of Git, browser code, and the public template. The user confirmed the demo-only cost tradeoff.
+
+### 放弃理由
+选择了当前方案，放弃其他备选方案。
+
+### 风险判断
+The URL remains a CloudFormation deployment parameter; this is not appropriate for production, shared, or customer-data deployments.
+
+### 后续验证
+通过后续执行结果和项目反馈验证。
+
+### 复盘入口
+如果关键前提变化或出现新的替代方案，需要重新评估。
+
+---
+
+*决策 | Source: User confirmation in this session: no Secrets Manager; reduce fixed cost.*

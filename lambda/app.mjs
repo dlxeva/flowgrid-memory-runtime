@@ -1,5 +1,4 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import pg from "pg";
 import { hasValidWriteToken } from "./auth.mjs";
 import { classifyRevision, deterministicEmbedding, vectorLiteral } from "./decision-rules.mjs";
@@ -7,27 +6,15 @@ import { ensureProject, findProject } from "./project-store.mjs";
 import { createRuntimeSnapshot } from "./runtime-snapshot.mjs";
 
 const { Pool } = pg;
-const secrets = new SecretsManagerClient({});
 const s3 = new S3Client({});
 
 let pool;
-let resolvedDatabaseUrl;
 
 async function databaseUrl() {
-  if (resolvedDatabaseUrl) return resolvedDatabaseUrl;
-  if (process.env.DATABASE_URL) {
-    resolvedDatabaseUrl = process.env.DATABASE_URL;
-    return resolvedDatabaseUrl;
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL must be configured.");
   }
-  if (!process.env.DATABASE_URL_SECRET_ARN) {
-    throw new Error("DATABASE_URL_SECRET_ARN or DATABASE_URL must be configured.");
-  }
-
-  const response = await secrets.send(
-    new GetSecretValueCommand({ SecretId: process.env.DATABASE_URL_SECRET_ARN }),
-  );
-  resolvedDatabaseUrl = response.SecretString;
-  return resolvedDatabaseUrl;
+  return process.env.DATABASE_URL;
 }
 
 async function client() {

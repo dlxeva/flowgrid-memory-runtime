@@ -13,22 +13,22 @@ AWS_REGION=ap-southeast-3 scripts/aws-preflight.sh
 
 The script runs `sam validate --lint` and `aws sts get-caller-identity`. It creates no cloud resources. If it reports missing credentials, complete CLI authentication first; do not work around that by putting long-lived keys in this repository.
 
-This project targets AWS Jakarta (`ap-southeast-3`) to match the CockroachDB Basic cluster. A console selector set to another region, such as Sydney, does not change the deployment target.
+The current CloudShell credential is valid in AWS US East (N. Virginia) (`us-east-1`). The first demo deployment therefore targets that region while connecting to the existing CockroachDB Basic cluster in AWS Jakarta (`ap-southeast-3`). This adds cross-region latency, but avoids creating a second database or persistent AWS credentials.
 
 ## 1. Create the CockroachDB Cloud cluster
 
-1. The current free-tier target is the existing CockroachDB Basic cluster in AWS Jakarta (`ap-southeast-3`). Deploy Lambda in the same region to avoid a second cluster and cross-region latency.
+1. The current free-tier target is the existing CockroachDB Basic cluster in AWS Jakarta (`ap-southeast-3`). The first Lambda deployment runs in `us-east-1` because the available CloudShell session can deploy there; do not create a second database for this demo.
 2. Create a dedicated SQL user for this demo and copy its general connection string into a password manager.
 3. Enable the vector-index feature, then apply [001_judgment_memory.sql](../infra/migrations/001_judgment_memory.sql) in the Cloud SQL shell. Verify with `SHOW CREATE TABLE memory_embeddings;` that its vector index uses `vector_l2_ops`, which matches the Lambda's `<->` retrieval query.
 4. In the CockroachDB Cloud console, configure the managed MCP connection for the cluster. Use OAuth for interactive inspection. Do not create another cluster solely for this demo.
 
 The runtime uses CockroachDB's `VECTOR(8)` field for a deterministic synthetic embedding. That lets the demo show real vector-index retrieval without storing any user content.
 
-## 2. Store the database URL in AWS
+## 2. Supply the database URL only at deploy time
 
-In AWS Secrets Manager, create a secret containing the CockroachDB connection URL as a plain string. Name it `flowgrid-memory-runtime/database-url`.
+For this synthetic hackathon demo, pass the CockroachDB URL as a `NoEcho` CloudFormation parameter. SAM writes it to Lambda's encrypted environment and it is never committed, exposed to the browser, or stored in `template.yaml`.
 
-Do not put the URL in `template.yaml`, a browser client, Git, or a Lambda environment variable.
+This deliberately avoids the recurring cost of AWS Secrets Manager. It is a demo-only tradeoff: use a dedicated secret store before any production, shared, or customer-data deployment.
 
 ## 3. Build and deploy the Lambda stack
 
@@ -38,9 +38,9 @@ Run these commands from the repository root in AWS CloudShell after installing t
 sam build --template-file infra/template.yaml
 sam deploy --guided \
   --stack-name flowgrid-memory-runtime \
-  --region ap-southeast-3 \
+  --region us-east-1 \
   --parameter-overrides \
-    DatabaseUrlSecretArn=<secret-arn> \
+    DatabaseUrl=<cockroachdb-connection-url> \
     RuntimeWriteToken=<long-random-token>
 ```
 
