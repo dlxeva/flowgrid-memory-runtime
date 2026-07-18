@@ -29,7 +29,7 @@ auditEvents[]
 
 `src/runtime.ts` produces this shape for the offline demo. `lambda/runtime-snapshot.mjs` maps CockroachDB rows to the same shape, including source references and supersession links. `src/cloud-runtime.ts` rejects incomplete remote responses before the UI renders them.
 
-The browser stays offline by default. A deployed read-only endpoint is loaded only when `VITE_RUNTIME_API_URL` is configured; it is never given a CockroachDB connection URL. `GET` never creates a project or writes to the ledger. Only an authenticated `initialize_demo` request may create the synthetic project.
+The browser stays offline by default. A deployed read-only endpoint is loaded only when `VITE_RUNTIME_API_URL` is configured; it is never given a CockroachDB connection URL. `GET` never creates a project or writes to the ledger. Unauthorized `POST` requests are rejected before a database connection is opened. Only an authenticated `initialize_demo` request may create the synthetic project.
 
 ## CockroachDB tables
 

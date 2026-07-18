@@ -288,35 +288,42 @@ async function executeAction(db, project, body) {
   throw new Error(`Unsupported action: ${action}`);
 }
 
-export async function handler(event) {
-  if (event.requestContext?.http?.method === "OPTIONS" || event.httpMethod === "OPTIONS") return response(204, {});
-  const method = event.requestContext?.http?.method ?? event.httpMethod ?? "GET";
-  const projectSlug = event.queryStringParameters?.project ?? "demo-launch";
-  const db = await client();
+export function createHandler({ acquireClient = client, persistTrace = saveTrace, writeToken = process.env.RUNTIME_WRITE_TOKEN } = {}) {
+  return async function handler(event) {
+    if (event.requestContext?.http?.method === "OPTIONS" || event.httpMethod === "OPTIONS") return response(204, {});
+    const method = event.requestContext?.http?.method ?? event.httpMethod ?? "GET";
+    const projectSlug = event.queryStringParameters?.project ?? "demo-launch";
 
-  try {
-    if (method === "GET") {
-      const project = await findProject(db, projectSlug);
-      if (!project) return response(404, { error: "Project not found" });
-      return response(200, await readState(db, project));
+    if (method !== "GET" && method !== "POST") return response(405, { error: "Method not allowed" });
+    if (method === "POST" && !hasValidWriteToken(event, writeToken)) {
+      return response(401, { error: "Invalid runtime write token" });
     }
-    if (method !== "POST") return response(405, { error: "Method not allowed" });
-    if (!hasValidWriteToken(event, process.env.RUNTIME_WRITE_TOKEN)) return response(401, { error: "Invalid runtime write token" });
 
-    const body = parseBody(event);
-    const project = body.action === "initialize_demo"
-      ? await ensureProject(db, projectSlug)
-      : await findProject(db, projectSlug);
-    if (!project) return response(404, { error: "Project not found; initialize the demo first" });
-    await db.query("BEGIN");
-    const result = await executeAction(db, project, body);
-    await db.query("COMMIT");
-    await saveTrace(project.slug, body.action, result);
-    return response(200, result);
-  } catch (error) {
-    await db.query("ROLLBACK").catch(() => {});
-    return response(400, { error: error instanceof Error ? error.message : "Runtime error" });
-  } finally {
-    db.release();
-  }
+    const db = await acquireClient();
+    try {
+      if (method === "GET") {
+        const project = await findProject(db, projectSlug);
+        if (!project) return response(404, { error: "Project not found" });
+        return response(200, await readState(db, project));
+      }
+
+      const body = parseBody(event);
+      const project = body.action === "initialize_demo"
+        ? await ensureProject(db, projectSlug)
+        : await findProject(db, projectSlug);
+      if (!project) return response(404, { error: "Project not found; initialize the demo first" });
+      await db.query("BEGIN");
+      const result = await executeAction(db, project, body);
+      await db.query("COMMIT");
+      await persistTrace(project.slug, body.action, result);
+      return response(200, result);
+    } catch (error) {
+      await db.query("ROLLBACK").catch(() => {});
+      return response(400, { error: error instanceof Error ? error.message : "Runtime error" });
+    } finally {
+      db.release();
+    }
+  };
 }
+
+export const handler = createHandler();
