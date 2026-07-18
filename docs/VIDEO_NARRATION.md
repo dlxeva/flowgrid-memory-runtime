@@ -33,6 +33,6 @@ clip duration plus a short transition, not from a preallocated 90-second grid.
 
 ## Delivery Boundary
 
-- Do not claim that Lambda, API Gateway, Secrets Manager, or S3 are deployed.
+- Do not claim that Lambda, API Gateway, or S3 are deployed.
 - The final Devpost submission still needs a deployed AWS integration, a public
   functional demo URL, and a video that shows that deployed path.

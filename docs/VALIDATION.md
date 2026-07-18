@@ -36,5 +36,5 @@ The managed MCP `create_table` interface permits vector-index creation inside `C
 
 ## Remaining validation gates
 
-1. Execute the Lambda write path against the existing schema only after a separate zero-cost review of AWS Secrets Manager, Lambda, and S3.
+1. Execute the Lambda write path against the existing schema only after a separate cost review of Lambda, API Gateway, S3, CloudWatch, and cross-region transfer.
 2. Validate vector retrieval through the deployed runtime rather than direct managed-MCP inspection.

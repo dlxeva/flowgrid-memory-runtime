@@ -45,7 +45,7 @@ The live cluster evidence is recorded in [VALIDATION.md](VALIDATION.md).
 
 ## AWS integration status
 
-The repository includes an AWS SAM template for a controlled Lambda write API, API Gateway, Secrets Manager, and a private S3 trace bucket. The Lambda code performs the lifecycle transaction and returns the same Runtime Snapshot contract consumed by the browser.
+The repository includes an AWS SAM template for a controlled Lambda write API, API Gateway, and a private S3 trace bucket. For this synthetic demo, the CockroachDB URL is supplied as an encrypted `NoEcho` deployment parameter rather than through a recurring Secrets Manager resource. The Lambda code performs the lifecycle transaction and returns the same Runtime Snapshot contract consumed by the browser.
 
 **Not yet deployed:** no AWS resource, public API URL, or S3 trace bucket has been created. Before final submission, deploy the reviewed SAM stack, record the resulting Demo URL, and show Lambda writing the synthetic lifecycle to CockroachDB. This is required by the hackathon rules because AWS must be meaningfully integrated.
 
