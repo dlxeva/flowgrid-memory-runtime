@@ -1,13 +1,13 @@
 # Cloud Deployment Runbook
 
-This guide deploys synthetic hackathon data only. It does not import FlowGrid ledgers, user sessions, or private evaluation material.
+This optional guide deploys synthetic hackathon data only. It does not import FlowGrid ledgers, user sessions, or private evaluation material. It creates AWS resources and must not be run until a separate cost review approves it.
 
 ## 1. Create the CockroachDB Cloud cluster
 
 1. The current free-tier target is the existing CockroachDB Basic cluster in AWS Jakarta (`ap-southeast-3`). Deploy Lambda in the same region to avoid a second cluster and cross-region latency.
 2. Create a dedicated SQL user for this demo and copy its general connection string into a password manager.
 3. Enable the vector-index feature, then apply [001_judgment_memory.sql](../infra/migrations/001_judgment_memory.sql) in the Cloud SQL shell.
-4. In the CockroachDB Cloud console, configure the managed MCP connection for the cluster. Use OAuth for interactive inspection. Give the hackathon demo its own staging cluster.
+4. In the CockroachDB Cloud console, configure the managed MCP connection for the cluster. Use OAuth for interactive inspection. Do not create another cluster solely for this demo.
 
 The runtime uses CockroachDB's `VECTOR(8)` field for a deterministic synthetic embedding. That lets the demo show real vector-index retrieval without storing any user content.
 

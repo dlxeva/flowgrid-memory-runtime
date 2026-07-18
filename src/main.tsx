@@ -53,6 +53,7 @@ function App() {
           <button disabled={!cloudRuntimeUrl || loadingCloud} onClick={loadCloudState} title={cloudRuntimeUrl ? "Load the deployed read-only runtime" : "Set VITE_RUNTIME_API_URL after deployment"}>
             {loadingCloud ? "Loading cloud state…" : "Load CockroachDB state"}
           </button>
+          {!cloudRuntimeUrl && <p className="cloud-hint">Optional cloud mode: no deployment URL is configured.</p>}
           <button disabled={resumed} onClick={() => setState(resume)}>1. Resume with Agent B</button>
           <button disabled={!resumed || pending || applied} onClick={() => setState(proposeKolRevision)}>2. Request KOL change</button>
           <button disabled={!pending || applied} onClick={() => setState(applyConversionEvidence)}>3. Add conversion evidence</button>
