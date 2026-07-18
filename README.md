@@ -15,6 +15,8 @@ This repository provides a local, synthetic demo of the judgment lifecycle:
 
 The AWS Lambda handler, CockroachDB schema, vector-index query, Managed MCP setup path, and deployment template are now in the repository. Account provisioning and deployment remain intentionally manual because they create cloud resources and require credentials.
 
+The current free-tier CockroachDB Basic cluster has passed the vector-index readiness check. See [docs/VALIDATION.md](docs/VALIDATION.md).
+
 ## Local development
 
 ```bash
