@@ -22,13 +22,12 @@ Ship a synthetic, publicly demonstrable CockroachDB memory runtime that protects
 - CockroachDB Basic contains a synthetic lifecycle, provenance links, handoff, audit history, and vector embeddings.
 - The AWS SAM stack is deployed in `us-east-1`; Lambda, API Gateway, private S3 trace storage, and seven-day CloudWatch logs are live.
 - The deployed verifier completed the protected lifecycle against CockroachDB: `D-001` confirmed, `P-001` pending, then `D-001` superseded by `D-002` after evidence.
-- Current HTML/CSS demo video is rendered and intentionally frozen for later visual refinement.
+- V3 is an editable ChatCut HTML/CSS rebuild with the 人工智障研究所 archive style, clear state connections, the deployed AWS path, and the public demo URL.
 
 ## Unconfirmed
 
-- Final video update and Devpost submission.
 - Independent judge or design-partner response.
-- Independent judge or design-partner response.
+- Final V3 export and Devpost submission.
 
 ## Current Risks
 
@@ -38,7 +37,7 @@ Ship a synthetic, publicly demonstrable CockroachDB memory runtime that protects
 
 ## Next Highest Priority Action
 
-Update the final video with the deployed AWS path, publish it, then submit the public repository, demo, and video evidence to Devpost.
+Replace the legacy final voice clip, export V3, then submit the public repository, demo, and video evidence to Devpost.
 
 ---
 

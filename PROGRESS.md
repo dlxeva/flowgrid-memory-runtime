@@ -11,10 +11,11 @@
 - Verified the deployed Lambda -> CockroachDB -> S3 synthetic lifecycle: `D-001` confirmed, `P-001` pending, then `D-001` superseded by confirmed `D-002` after qualifying evidence.
 - Independently read the deployed final snapshot through the public unauthenticated `GET` path; the browser build remains read-only and receives no database URL or runtime token.
 - Published the browser demo at `https://dlxeva.github.io/flowgrid-memory-runtime/`; verified HTTP 200, the deployed API URL in the static bundle, and the absence of database URL and runtime write token strings.
+- Rebuilt the editable V3 ChatCut visual timeline in the 人工智障研究所 archive style: the seal is brand-only, pending revisions use seal red, evidence uses signal blue, and state-transition lines are explicit and reviewed.
 
 ## Next
 
-- Update the final video with the deployed AWS path and publish the submission evidence.
+- Replace the legacy disclosure voice clip with the deployed-runtime wording, export V3, and publish the submission evidence.
 - Delete the stack and SAM packaging artifacts after the hackathon demonstration window.
 
 ---

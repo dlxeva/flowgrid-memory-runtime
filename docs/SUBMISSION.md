@@ -1,6 +1,6 @@
 # Hackathon Submission Draft
 
-> Status: draft only. The CockroachDB memory layer is live with synthetic data. AWS deployment and a public functional demo URL remain required before final Devpost submission.
+> Status: submission draft. The CockroachDB memory layer, AWS deployment, and public browser demo are live with synthetic data. The remaining gate is a public under-three-minute video that shows the deployed path.
 
 ![FlowGrid Memory Runtime architecture](assets/runtime-architecture.svg)
 
@@ -61,7 +61,7 @@ The repository includes an AWS SAM template for a controlled Lambda write API, A
 | 1:23-1:43 | Supply evidence; show `D-001` superseded and `D-002` confirmed | “Only qualifying conversion evidence changes project truth. The previous decision remains traceable instead of being erased.” |
 | 1:43-2:00 | Deployed Lambda endpoint and S3 trace after deployment | “AWS Lambda performs the controlled transaction; the browser receives a read-only runtime snapshot. This turns memory into governed project state.” |
 
-Do not record or publish the final video until the final segment can show the deployed AWS path. The event requires a publicly visible video under three minutes that shows the CockroachDB memory layer in operation.
+The V3 timeline now shows the deployed AWS path and public browser demo. Its current final-export gate is replacing the legacy disclosure audio, which still says deployment is planned. The event requires a publicly visible video under three minutes that shows the CockroachDB memory layer in operation.
 
 ## Submission readiness
 
