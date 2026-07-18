@@ -33,6 +33,10 @@ source event
 - **AWS Lambda:** runs the controlled memory write endpoint using a restricted service account.
 - **Amazon S3:** stores only synthetic demo artifacts and exported run traces.
 
+## Current free-tier route
+
+The hackathon proof targets the existing CockroachDB Basic cluster on AWS Jakarta (`ap-southeast-3`). The runtime keeps all work local until a read-only compatibility check confirms that this cluster can expose the required CockroachDB AI tooling. Any cloud write or AWS deployment remains gated behind a zero-cost review.
+
 ## Transaction boundary
 
 One revision transaction writes the proposed or superseding judgment, its evidence links, an embedding reference, updated handoff state, and an audit event. Embedding inference completes before the transaction; the resulting vector reference is committed with the lifecycle change.

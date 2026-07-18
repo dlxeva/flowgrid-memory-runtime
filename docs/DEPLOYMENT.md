@@ -4,7 +4,7 @@ This guide deploys synthetic hackathon data only. It does not import FlowGrid le
 
 ## 1. Create the CockroachDB Cloud cluster
 
-1. Create a CockroachDB Cloud cluster close to AWS `ap-southeast-2` where possible.
+1. The current free-tier target is the existing CockroachDB Basic cluster in AWS Jakarta (`ap-southeast-3`). Deploy Lambda in the same region to avoid a second cluster and cross-region latency.
 2. Create a dedicated SQL user for this demo and copy its general connection string into a password manager.
 3. Enable the vector-index feature, then apply [001_judgment_memory.sql](../infra/migrations/001_judgment_memory.sql) in the Cloud SQL shell.
 4. In the CockroachDB Cloud console, configure the managed MCP connection for the cluster. Use OAuth for interactive inspection. Give the hackathon demo its own staging cluster.
@@ -25,7 +25,7 @@ Run these commands from the repository root in AWS CloudShell after installing t
 sam build --template-file infra/template.yaml
 sam deploy --guided \
   --stack-name flowgrid-memory-runtime \
-  --region ap-southeast-2 \
+  --region ap-southeast-3 \
   --parameter-overrides \
     DatabaseUrlSecretArn=<secret-arn> \
     RuntimeWriteToken=<long-random-token>
