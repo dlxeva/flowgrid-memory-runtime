@@ -1,7 +1,9 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import pg from "pg";
+import { hasValidWriteToken } from "./auth.mjs";
 import { classifyRevision, deterministicEmbedding, vectorLiteral } from "./decision-rules.mjs";
+import { createRuntimeSnapshot } from "./runtime-snapshot.mjs";
 
 const { Pool } = pg;
 const secrets = new SecretsManagerClient({});
@@ -50,12 +52,6 @@ function response(statusCode, body) {
 function parseBody(event) {
   if (!event.body) return {};
   return typeof event.body === "string" ? JSON.parse(event.body) : event.body;
-}
-
-function requiresWriteToken(event) {
-  const expected = process.env.RUNTIME_WRITE_TOKEN;
-  if (!expected) return true;
-  return event.headers?.["x-runtime-token"] === expected || event.headers?.["X-Runtime-Token"] === expected;
 }
 
 async function ensureProject(db, slug) {
@@ -110,23 +106,40 @@ async function semanticRecall(db, projectId, query) {
   return result.rows;
 }
 
-async function readState(db, projectId) {
-  const [judgments, revisions, handoff, auditEvents] = await Promise.all([
-    db.query(`SELECT decision_key, title, status, authority, rationale, reversal_condition, valid_at, superseded_at
-              FROM judgments WHERE project_id = $1 ORDER BY created_at`, [projectId]),
-    db.query(`SELECT revision_key, proposal, required_evidence, status, created_at, resolved_at
-              FROM proposed_revisions WHERE project_id = $1 ORDER BY created_at`, [projectId]),
-    db.query(`SELECT active_frame, updated_at FROM handoffs WHERE project_id = $1`, [projectId]),
+async function readState(db, project) {
+  const [sources, judgments, revisions, evidenceLinks, handoff, auditEvents] = await Promise.all([
+    db.query(`SELECT source_key, event_type, content, occurred_at
+              FROM source_events WHERE project_id = $1 ORDER BY occurred_at`, [project.id]),
+    db.query(`SELECT j.decision_key, j.title, j.status, j.authority, j.rationale, j.reversal_condition,
+                     j.valid_at, j.superseded_at, replacement.decision_key AS superseded_by_key
+              FROM judgments j
+              LEFT JOIN judgments replacement ON replacement.id = j.superseded_by
+              WHERE j.project_id = $1 ORDER BY j.created_at`, [project.id]),
+    db.query(`SELECT r.revision_key, r.proposal, r.required_evidence, r.status, r.created_at, r.resolved_at,
+                     j.decision_key AS active_decision_key
+              FROM proposed_revisions r
+              JOIN judgments j ON j.id = r.active_judgment_id
+              WHERE r.project_id = $1 ORDER BY r.created_at`, [project.id]),
+    db.query(`SELECT s.source_key, e.relation, j.decision_key, r.revision_key
+              FROM evidence_links e
+              JOIN source_events s ON s.id = e.source_event_id
+              LEFT JOIN judgments j ON j.id = e.judgment_id
+              LEFT JOIN proposed_revisions r ON r.id = e.proposed_revision_id
+              WHERE e.project_id = $1 ORDER BY e.created_at`, [project.id]),
+    db.query(`SELECT active_frame, updated_at FROM handoffs WHERE project_id = $1`, [project.id]),
     db.query(`SELECT event_type, artifact_key, detail, created_at
-              FROM audit_events WHERE project_id = $1 ORDER BY created_at DESC LIMIT 20`, [projectId]),
+              FROM audit_events WHERE project_id = $1 ORDER BY created_at DESC LIMIT 20`, [project.id]),
   ]);
 
-  return {
+  return createRuntimeSnapshot({
+    projectSlug: project.slug,
+    sources: sources.rows,
     judgments: judgments.rows,
     proposedRevisions: revisions.rows,
+    evidenceLinks: evidenceLinks.rows,
     handoff: handoff.rows[0] ?? null,
     auditEvents: auditEvents.rows,
-  };
+  });
 }
 
 async function saveTrace(projectSlug, action, payload) {
@@ -176,12 +189,12 @@ async function executeAction(db, project, body) {
       [project.id],
     );
     await audit(db, project.id, "judgment_confirmed", "D-001", { source: source.source_key });
-    return readState(db, project.id);
+    return readState(db, project);
   }
 
   if (action === "resume") {
     await audit(db, project.id, "agent_resumed", "handoff", { agent: body.agent ?? "Agent B" });
-    return readState(db, project.id);
+    return readState(db, project);
   }
 
   if (action === "request_revision") {
@@ -292,9 +305,9 @@ export async function handler(event) {
 
   try {
     const project = await ensureProject(db, projectSlug);
-    if (method === "GET") return response(200, await readState(db, project.id));
+    if (method === "GET") return response(200, await readState(db, project));
     if (method !== "POST") return response(405, { error: "Method not allowed" });
-    if (!requiresWriteToken(event)) return response(401, { error: "Invalid runtime write token" });
+    if (!hasValidWriteToken(event, process.env.RUNTIME_WRITE_TOKEN)) return response(401, { error: "Invalid runtime write token" });
 
     const body = parseBody(event);
     await db.query("BEGIN");

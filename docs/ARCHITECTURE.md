@@ -14,6 +14,23 @@ source event
   -> apply a superseding decision only when qualifying evidence is present
 ```
 
+## Runtime snapshot contract
+
+The browser and Lambda exchange one `RuntimeState` JSON shape:
+
+```text
+projectSlug
+frame
+sources[]
+decisions[]
+proposals[]
+auditEvents[]
+```
+
+`src/runtime.ts` produces this shape for the offline demo. `lambda/runtime-snapshot.mjs` maps CockroachDB rows to the same shape, including source references and supersession links. `src/cloud-runtime.ts` rejects incomplete remote responses before the UI renders them.
+
+The browser stays offline by default. A deployed read-only endpoint is loaded only when `VITE_RUNTIME_API_URL` is configured; it is never given a CockroachDB connection URL.
+
 ## CockroachDB tables
 
 | Table | Purpose |
@@ -35,7 +52,7 @@ source event
 
 ## Current free-tier route
 
-The hackathon proof targets the existing CockroachDB Basic cluster on AWS Jakarta (`ap-southeast-3`). The runtime keeps all work local until a read-only compatibility check confirms that this cluster can expose the required CockroachDB AI tooling. Any cloud write or AWS deployment remains gated behind a zero-cost review.
+The hackathon proof targets the existing CockroachDB Basic cluster on AWS Jakarta (`ap-southeast-3`). The schema and synthetic lifecycle data have been validated there through the managed MCP. The runtime remains local until a separate zero-cost review approves AWS deployment.
 
 ## Transaction boundary
 

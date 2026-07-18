@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import type { Authority, RuntimeState } from "./domain";
+import { loadCloudRuntime } from "./cloud-runtime";
 import { applyConversionEvidence, createDemoState, proposeKolRevision, resume } from "./runtime";
 import "./styles.css";
 
@@ -8,9 +9,26 @@ const authorityLabel: Record<Authority, string> = { high: "Human-confirmed", med
 
 function App() {
   const [state, setState] = useState<RuntimeState>(createDemoState);
+  const [cloudStatus, setCloudStatus] = useState("Offline demo runtime");
+  const [loadingCloud, setLoadingCloud] = useState(false);
+  const cloudRuntimeUrl = import.meta.env.VITE_RUNTIME_API_URL?.trim();
   const resumed = state.auditEvents.some((event) => event.action === "resumed");
   const pending = state.proposals.some((proposal) => proposal.status === "pending");
   const applied = state.proposals.some((proposal) => proposal.status === "applied");
+
+  async function loadCloudState() {
+    if (!cloudRuntimeUrl) return;
+    setLoadingCloud(true);
+    setCloudStatus("Loading CockroachDB-backed runtime…");
+    try {
+      setState(await loadCloudRuntime(cloudRuntimeUrl, "hackathon-demo"));
+      setCloudStatus("CockroachDB-backed runtime");
+    } catch (error) {
+      setCloudStatus(error instanceof Error ? error.message : "Cloud runtime could not be loaded.");
+    } finally {
+      setLoadingCloud(false);
+    }
+  }
 
   return (
     <main>
@@ -19,7 +37,7 @@ function App() {
           <p className="eyebrow">FlowGrid research prototype</p>
           <h1>Memory should respect commitments.</h1>
         </div>
-        <div className="runtime-status"><span /> Local demo runtime</div>
+        <div className="runtime-status"><span /> {cloudStatus}</div>
       </header>
 
       <section className="thesis">
@@ -32,6 +50,9 @@ function App() {
           <h2>{applied ? "Evidence changed the decision safely." : pending ? "The project is protected from a silent overwrite." : resumed ? "Agent B resumed with the active judgment." : "Agent A has committed the launch strategy."}</h2>
         </div>
         <div className="controls">
+          <button disabled={!cloudRuntimeUrl || loadingCloud} onClick={loadCloudState} title={cloudRuntimeUrl ? "Load the deployed read-only runtime" : "Set VITE_RUNTIME_API_URL after deployment"}>
+            {loadingCloud ? "Loading cloud state…" : "Load CockroachDB state"}
+          </button>
           <button disabled={resumed} onClick={() => setState(resume)}>1. Resume with Agent B</button>
           <button disabled={!resumed || pending || applied} onClick={() => setState(proposeKolRevision)}>2. Request KOL change</button>
           <button disabled={!pending || applied} onClick={() => setState(applyConversionEvidence)}>3. Add conversion evidence</button>
@@ -80,4 +101,3 @@ function App() {
 }
 
 createRoot(document.getElementById("root")!).render(<App />);
-

@@ -37,10 +37,10 @@ export interface AuditEvent {
 }
 
 export interface RuntimeState {
+  projectSlug: string;
   frame: string;
   sources: SourceEvent[];
   decisions: Decision[];
   proposals: ProposedRevision[];
   auditEvents: AuditEvent[];
 }
-

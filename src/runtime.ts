@@ -22,6 +22,7 @@ export function createDemoState(): RuntimeState {
   };
 
   return {
+    projectSlug: "local-demo",
     frame: "Launch a seasonal game update by prioritizing returning-player activation.",
     sources: [source("S-001", "conversation", "Human owner confirmed the launch strategy and budget boundary.")],
     decisions: [initialDecision],
