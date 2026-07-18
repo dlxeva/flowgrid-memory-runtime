@@ -2,6 +2,19 @@
 
 This optional guide deploys synthetic hackathon data only. It does not import FlowGrid ledgers, user sessions, or private evaluation material. It creates AWS resources and must not be run until a separate cost review approves it.
 
+## 0. Local preflight (read-only)
+
+AWS Console login does not automatically give a local terminal AWS credentials. Before any deploy, authenticate the AWS CLI through your approved account flow, then run the read-only preflight from the repository root:
+
+```bash
+chmod +x scripts/aws-preflight.sh
+AWS_REGION=ap-southeast-3 scripts/aws-preflight.sh
+```
+
+The script runs `sam validate --lint` and `aws sts get-caller-identity`. It creates no cloud resources. If it reports missing credentials, complete CLI authentication first; do not work around that by putting long-lived keys in this repository.
+
+This project targets AWS Jakarta (`ap-southeast-3`) to match the CockroachDB Basic cluster. A console selector set to another region, such as Sydney, does not change the deployment target.
+
 ## 1. Create the CockroachDB Cloud cluster
 
 1. The current free-tier target is the existing CockroachDB Basic cluster in AWS Jakarta (`ap-southeast-3`). Deploy Lambda in the same region to avoid a second cluster and cross-region latency.

@@ -8,5 +8,13 @@ coverage/
 vite.config.js
 vite.config.d.ts
 
+# SAM build output and per-machine deployment parameters may contain local paths
+# or secrets. Deployment configuration is supplied explicitly at deploy time.
+.aws-sam/
+samconfig.toml
+samconfig.local.toml
+deploy.env
+deploy.local.env
+
 # Owner-provided voice references and local TTS generations.
 voiceover/
