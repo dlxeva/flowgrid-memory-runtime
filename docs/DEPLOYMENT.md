@@ -19,7 +19,7 @@ This project targets AWS Jakarta (`ap-southeast-3`) to match the CockroachDB Bas
 
 1. The current free-tier target is the existing CockroachDB Basic cluster in AWS Jakarta (`ap-southeast-3`). Deploy Lambda in the same region to avoid a second cluster and cross-region latency.
 2. Create a dedicated SQL user for this demo and copy its general connection string into a password manager.
-3. Enable the vector-index feature, then apply [001_judgment_memory.sql](../infra/migrations/001_judgment_memory.sql) in the Cloud SQL shell.
+3. Enable the vector-index feature, then apply [001_judgment_memory.sql](../infra/migrations/001_judgment_memory.sql) in the Cloud SQL shell. Verify with `SHOW CREATE TABLE memory_embeddings;` that its vector index uses `vector_l2_ops`, which matches the Lambda's `<->` retrieval query.
 4. In the CockroachDB Cloud console, configure the managed MCP connection for the cluster. Use OAuth for interactive inspection. Do not create another cluster solely for this demo.
 
 The runtime uses CockroachDB's `VECTOR(8)` field for a deterministic synthetic embedding. That lets the demo show real vector-index retrieval without storing any user content.

@@ -1,7 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
-import { createHandler } from "./app.mjs";
+import { createHandler, semanticRecall } from "./app.mjs";
 
 describe("runtime HTTP boundary", () => {
+  it("uses the same L2 operator as the deployed CockroachDB vector index", async () => {
+    const db = {
+      query: vi.fn().mockResolvedValue({ rows: [] }),
+    };
+
+    await semanticRecall(db, "project-id", "KOL conversion evidence");
+
+    expect(db.query).toHaveBeenCalledOnce();
+    const [query] = db.query.mock.calls[0];
+    expect(query).toContain("embedding <-> $2::VECTOR");
+    expect(query).toContain("ORDER BY embedding <-> $2::VECTOR");
+  });
+
   it("rejects an unauthorized mutation before opening a database connection", async () => {
     const acquireClient = vi.fn(async () => {
       throw new Error("The database must not be reached.");

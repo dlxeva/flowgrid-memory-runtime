@@ -84,13 +84,13 @@ async function storeEmbedding(db, projectId, judgmentId, content) {
   );
 }
 
-async function semanticRecall(db, projectId, query) {
+export async function semanticRecall(db, projectId, query) {
   const vector = vectorLiteral(deterministicEmbedding(query));
   const result = await db.query(
-    `SELECT judgment_id, content, embedding <=> $2::VECTOR AS distance
+    `SELECT judgment_id, content, embedding <-> $2::VECTOR AS distance
      FROM memory_embeddings
      WHERE project_id = $1
-     ORDER BY embedding <=> $2::VECTOR
+     ORDER BY embedding <-> $2::VECTOR
      LIMIT 3`,
     [projectId, vector],
   );

@@ -96,4 +96,4 @@ CREATE INDEX IF NOT EXISTS audit_events_project_created_idx ON audit_events (pro
 -- Enable this once on the CockroachDB Cloud cluster before applying the index.
 -- SET CLUSTER SETTING feature.vector_index.enabled = true;
 CREATE VECTOR INDEX IF NOT EXISTS memory_embeddings_project_embedding_idx
-  ON memory_embeddings (project_id, embedding vector_cosine_ops);
+  ON memory_embeddings (project_id, embedding vector_l2_ops);
