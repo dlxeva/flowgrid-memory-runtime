@@ -1,0 +1,26 @@
+{
+  "schema_version": "1",
+  "project_id": "flowgrid-memory-runtime",
+  "project_name": "FlowGrid Memory Runtime",
+  "language": "zh",
+  "flg_version": "0.3.0",
+  "created_at": "2026-07-18T18:28:52",
+  "updated_at": "2026-07-18T18:31:36",
+  "current_stage": "hackathon_prototype_hardening",
+  "last_closeout_at": null,
+  "pending_patches": [
+    {
+      "patch_id": "frame-20260718-182853-0bdf1a",
+      "path": "/Users/hu/Projects/flowgrid-memory-runtime/.flg/patches/frame-20260718-182853-0bdf1a.patch.md",
+      "risk_level": "medium",
+      "source_command": "flg frame",
+      "status": "rejected",
+      "created_at": "2026-07-18T18:28:53",
+      "rejected_at": "2026-07-18T18:31:36"
+    }
+  ],
+  "next_actions": [],
+  "active_agent": null,
+  "dirty_files": [],
+  "last_snapshot_hash": null
+}

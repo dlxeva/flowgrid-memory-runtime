@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "rebuilt_from": "DECISIONS.md",
+  "items": {
+    "D-002": {
+      "decision_id": "D-002",
+      "status": "confirmed",
+      "authority": "high",
+      "source_type": "ledger_rebuild",
+      "source_excerpt": "The hackathon runtime uses synthetic data only; no real FlowGrid ledger, user session, customer record, or private evaluation material may enter the demo.",
+      "title": "The hackathon runtime uses synthetic data only; no",
+      "rationale": "The submission needs a demonstrable memory lifecycle without exposing personal or project-sensitive context.",
+      "alternatives": "A. Import a real ledger、Use anonymized project traces",
+      "rejected_alternatives": "选择了当前方案，放弃其他备选方案。",
+      "reversal_conditions": "如果关键前提变化或出现新的替代方案，需要重新评估。\n\n---\n\n*原则 | Source: Owner instruction and hackathon scope*"
+    },
+    "D-003": {
+      "decision_id": "D-003",
+      "status": "confirmed",
+      "authority": "high",
+      "source_type": "ledger_rebuild",
+      "source_excerpt": "AWS deployment is gated by a separate explicit cost review; until then only local validation and read-only cloud inspection are allowed.",
+      "title": "AWS deployment is gated by a separate explicit cos",
+      "rationale": "The owner requires zero unapproved cloud spend while away from the computer.",
+      "alternatives": "A. Deploy immediately、Create a second AWS environment",
+      "rejected_alternatives": "选择了当前方案，放弃其他备选方案。",
+      "reversal_conditions": "如果关键前提变化或出现新的替代方案，需要重新评估。\n\n---\n\n*原则 | Source: Owner instruction: do not deduct fees and do what is safely possible*"
+    },
+    "D-004": {
+      "decision_id": "D-004",
+      "status": "confirmed",
+      "authority": "high",
+      "source_type": "ledger_rebuild",
+      "source_excerpt": "Use L2 vector retrieval with normalized deterministic embeddings to match the existing CockroachDB Basic vector index.",
+      "title": "Use L2 vector retrieval with normalized determinis",
+      "rationale": "The live cluster uses vector_l2_ops; unit-normalized embeddings preserve cosine ranking under L2 and align query/index semantics without rebuilding cloud schema.",
+      "alternatives": "A. Rebuild the live index as cosine、Keep a query/index mismatch",
+      "rejected_alternatives": "选择了当前方案，放弃其他备选方案。",
+      "reversal_conditions": "如果关键前提变化或出现新的替代方案，需要重新评估。\n\n---\n\n*原则 | Source: Live CockroachDB schema inspection and official CockroachDB vector-index documentation*"
+    }
+  },
+  "updated_at": "2026-07-18T18:32:11"
+}
