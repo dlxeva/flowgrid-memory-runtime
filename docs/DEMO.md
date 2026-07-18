@@ -31,6 +31,12 @@ Click **Request KOL change**. The proposal panel receives pending `P-001`, while
 
 Click **Add conversion evidence**. The runtime preserves `D-001` as `superseded`, creates confirmed `D-002`, marks `P-001` as `applied`, and appends an audit event.
 
+## Visual evidence
+
+| Initial commitment | Conflicting request remains pending | Evidence creates a traceable replacement |
+| --- | --- | --- |
+| ![Initial protected judgment](assets/demo-initial.png) | ![Pending proposed revision](assets/demo-pending-revision.png) | ![Evidence-applied judgment lifecycle](assets/demo-judgment-outcome.png) |
+
 ## What is real versus simulated
 
 | Capability | Status |

@@ -19,6 +19,8 @@ This repository provides a local, synthetic demo of the judgment lifecycle. It r
 
 See [docs/VALIDATION.md](docs/VALIDATION.md) for the live database evidence and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the runtime contract.
 
+For the Hackathon description, video script, visual evidence, and remaining submission gates, see [docs/SUBMISSION.md](docs/SUBMISSION.md).
+
 ## Run the demo
 
 ```bash
