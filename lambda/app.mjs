@@ -3,6 +3,7 @@ import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-sec
 import pg from "pg";
 import { hasValidWriteToken } from "./auth.mjs";
 import { classifyRevision, deterministicEmbedding, vectorLiteral } from "./decision-rules.mjs";
+import { ensureProject, findProject } from "./project-store.mjs";
 import { createRuntimeSnapshot } from "./runtime-snapshot.mjs";
 
 const { Pool } = pg;
@@ -52,16 +53,6 @@ function response(statusCode, body) {
 function parseBody(event) {
   if (!event.body) return {};
   return typeof event.body === "string" ? JSON.parse(event.body) : event.body;
-}
-
-async function ensureProject(db, slug) {
-  const result = await db.query(
-    `INSERT INTO projects (slug) VALUES ($1)
-     ON CONFLICT (slug) DO UPDATE SET slug = excluded.slug
-     RETURNING id, slug`,
-    [slug],
-  );
-  return result.rows[0];
 }
 
 async function recordSource(db, projectId, { sourceKey, eventType, actor, content, authority = "medium" }) {
@@ -304,12 +295,19 @@ export async function handler(event) {
   const db = await client();
 
   try {
-    const project = await ensureProject(db, projectSlug);
-    if (method === "GET") return response(200, await readState(db, project));
+    if (method === "GET") {
+      const project = await findProject(db, projectSlug);
+      if (!project) return response(404, { error: "Project not found" });
+      return response(200, await readState(db, project));
+    }
     if (method !== "POST") return response(405, { error: "Method not allowed" });
     if (!hasValidWriteToken(event, process.env.RUNTIME_WRITE_TOKEN)) return response(401, { error: "Invalid runtime write token" });
 
     const body = parseBody(event);
+    const project = body.action === "initialize_demo"
+      ? await ensureProject(db, projectSlug)
+      : await findProject(db, projectSlug);
+    if (!project) return response(404, { error: "Project not found; initialize the demo first" });
     await db.query("BEGIN");
     const result = await executeAction(db, project, body);
     await db.query("COMMIT");
