@@ -24,6 +24,8 @@ The deployed API evidence and cleanup boundary are in [docs/DEPLOYED_RUNTIME.md]
 
 The browser demo is live at [dlxeva.github.io/flowgrid-memory-runtime](https://dlxeva.github.io/flowgrid-memory-runtime/). It embeds only the public read-only runtime endpoint; the CockroachDB URL and runtime write token are not present in the Pages build.
 
+Watch the public demonstration video: [FlowGrid Memory Runtime | Governed Agent Memory on CockroachDB + AWS](https://youtu.be/Wcs3EQojEzE).
+
 For the Hackathon description, video script, visual evidence, and remaining submission gates, see [docs/SUBMISSION.md](docs/SUBMISSION.md).
 
 ## Run the demo
@@ -48,7 +50,7 @@ npm test
 npm run build
 ```
 
-## Optional cloud architecture
+## Runtime architecture
 
 ```text
 Agent -> CockroachDB Managed MCP (read active frame and judgments)
@@ -59,7 +61,7 @@ Agent -> CockroachDB Managed MCP (read active frame and judgments)
 
 CockroachDB Vector Indexing retrieves related prior judgments. The Lambda runtime uses transactions to atomically write a proposed revision, evidence links, an embedding reference, updated handoff state, and an audit event.
 
-## Deploy the synthetic cloud demo
+## Deployed synthetic cloud demo
 
 The deployed runtime uses an AWS Lambda write path, CockroachDB Cloud for durable judgment state and vector recall, CockroachDB Managed MCP for agent inspection, and a private S3 bucket for synthetic run traces.
 

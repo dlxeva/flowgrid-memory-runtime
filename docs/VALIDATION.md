@@ -8,7 +8,7 @@
 - Result: `true`
 - Evidence: manually executed in the CockroachDB Cloud SQL Shell by the project owner.
 
-This verifies that the current free-tier cluster can create and query the `VECTOR` index used by the synthetic hackathon runtime. The later controlled write validation below created only synthetic demo state. No AWS resource was created.
+This verifies that the current free-tier cluster can create and query the `VECTOR` index used by the synthetic hackathon runtime. The controlled write validation below created only synthetic demo state; no real FlowGrid ledger, user session, or customer data entered the cluster.
 
 ## CockroachDB Managed MCP access
 
@@ -19,7 +19,7 @@ This verifies that the current free-tier cluster can create and query the `VECTO
 - Local tool allowlist: read inspection plus the narrow `create_table` and `insert_rows` operations.
 - Result: OAuth login completed successfully after explicit owner approval for write access. The write scope is used only for this synthetic hackathon schema and demo data.
 
-The runtime still keeps application writes in the separately reviewed Lambda path. The temporary managed-MCP write scope exists solely to validate the database model without creating AWS resources.
+The runtime keeps application writes in the separately reviewed Lambda path. The temporary managed-MCP write scope exists solely to validate the synthetic database model, not to serve browser writes.
 
 ## Live synthetic runtime schema and lifecycle
 
@@ -34,7 +34,12 @@ The runtime still keeps application writes in the separately reviewed Lambda pat
 
 The managed MCP `create_table` interface permits vector-index creation inside `CREATE TABLE`, which uses CockroachDB's default `vector_l2_ops`. The deployment migration and Lambda recall query now use that same operator, preventing an index/query mismatch.
 
-## Remaining validation gates
+## Deployed runtime validation
 
-1. Execute the Lambda write path against the existing schema only after a separate cost review of Lambda, API Gateway, S3, CloudWatch, and cross-region transfer.
-2. Validate vector retrieval through the deployed runtime rather than direct managed-MCP inspection.
+- Date: 2026-07-18
+- Region: `us-east-1`
+- Components: AWS Lambda, API Gateway, private S3 trace bucket, and seven-day CloudWatch log group.
+- Result: the deployed verifier executed the full synthetic lifecycle against CockroachDB Cloud, then an unauthenticated `GET` returned the resulting read-only snapshot.
+- Public endpoint: `https://ie23uv52be.execute-api.us-east-1.amazonaws.com/demo/runtime/`
+
+See [DEPLOYED_RUNTIME.md](DEPLOYED_RUNTIME.md) for the exact lifecycle sequence, public-browser boundary, and cleanup plan.

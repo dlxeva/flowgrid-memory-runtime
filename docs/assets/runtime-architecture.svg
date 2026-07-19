@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
   <title id="title">FlowGrid Memory Runtime architecture</title>
-  <desc id="desc">A local demo and Managed MCP read CockroachDB judgment memory. An optional AWS Lambda and S3 path is clearly marked as not yet deployed.</desc>
+  <desc id="desc">A browser demo and Managed MCP read CockroachDB judgment memory. A deployed AWS Lambda and private S3 path provides controlled writes and synthetic traces.</desc>
   <style>
     .bg { fill: #d9e3da; }
     .panel { fill: #f4f0e7; stroke: #1e2622; stroke-width: 3; }
@@ -50,16 +50,16 @@
   <text x="770" y="320" class="small">scoped read</text>
 
   <rect x="242" y="610" width="330" height="142" class="cloud"/>
-  <text x="268" y="647" class="mono">OPTIONAL AWS PATH</text>
+  <text x="268" y="647" class="mono">DEPLOYED AWS PATH</text>
   <text x="268" y="691" class="label">Lambda Memory API</text>
   <text x="268" y="724" class="body">controlled writes</text>
 
   <rect x="694" y="610" width="260" height="142" class="cloud"/>
-  <text x="720" y="647" class="mono">OPTIONAL AWS PATH</text>
+  <text x="720" y="647" class="mono">DEPLOYED AWS PATH</text>
   <text x="720" y="691" class="label">Private S3</text>
   <text x="720" y="724" class="body">synthetic traces</text>
 
   <path d="M406 610 C430 560 520 528 588 495" class="dash"/>
   <path d="M758 610 C740 560 690 530 650 495" class="dash"/>
-  <text x="460" y="560" class="small">deploy only after cost review</text>
+  <text x="460" y="560" class="small">private traces · 7-day retention · $3 budget alert</text>
 </svg>

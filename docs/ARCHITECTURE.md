@@ -50,9 +50,9 @@ The browser stays offline by default. A deployed read-only endpoint is loaded on
 - **AWS Lambda:** runs the controlled memory write endpoint using a restricted service account.
 - **Amazon S3:** stores only synthetic demo artifacts and exported run traces.
 
-## Current free-tier route
+## Current deployed route
 
-The hackathon proof targets the existing CockroachDB Basic cluster on AWS Jakarta (`ap-southeast-3`). The schema and synthetic lifecycle data have been validated there through the managed MCP. The runtime remains local until a separate zero-cost review approves AWS deployment.
+The hackathon proof targets the existing CockroachDB Basic cluster on AWS Jakarta (`ap-southeast-3`). The schema and synthetic lifecycle data have been validated through the managed MCP. A deployed AWS stack in `us-east-1` runs the controlled Lambda write path and exposes a public, read-only API snapshot for the browser demo. The browser never receives database credentials or the runtime write token.
 
 ## Transaction boundary
 

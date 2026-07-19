@@ -61,7 +61,7 @@ The repository includes an AWS SAM template for a controlled Lambda write API, A
 | 1:23-1:43 | Supply evidence; show `D-001` superseded and `D-002` confirmed | “Only qualifying conversion evidence changes project truth. The previous decision remains traceable instead of being erased.” |
 | 1:43-2:00 | Deployed Lambda endpoint and S3 trace after deployment | “AWS Lambda performs the controlled transaction; the browser receives a read-only runtime snapshot. This turns memory into governed project state.” |
 
-The V3 timeline now shows the deployed AWS path and public browser demo. Its current final-export gate is replacing the legacy disclosure audio, which still says deployment is planned. The event requires a publicly visible video under three minutes that shows the CockroachDB memory layer in operation.
+The V3 timeline now shows the deployed AWS path and public browser demo. The final export uses the corrected disclosure audio and is publicly available on YouTube. The event requires a publicly visible video under three minutes that shows the CockroachDB memory layer in operation.
 
 ## Submission readiness
 
@@ -71,19 +71,19 @@ The V3 timeline now shows the deployed AWS path and public browser demo. Its cur
 | Agentic application with CockroachDB persistent memory | Live synthetic schema, lifecycle rows, vector index, Managed MCP inspection | Ready |
 | Meaningful AWS integration | Deployed Lambda, API Gateway, private S3 trace bucket, and end-to-end CockroachDB verification | Ready |
 | Functional public demo URL | GitHub Pages build reads the deployed public snapshot without browser credentials | Ready: https://dlxeva.github.io/flowgrid-memory-runtime/ |
-| Public video under 3 minutes | Script only | Blocked: record after deployment |
+| Public video under 3 minutes | Public YouTube demonstration showing the browser lifecycle and CockroachDB SQL results | Ready: https://youtu.be/Wcs3EQojEzE |
 | CockroachDB tool explanation | This document and `VALIDATION.md` | Ready |
 | AWS service explanation | This document distinguishes deployed Lambda, API Gateway, private S3 traces, and read-only browser access | Ready |
 
-## Final submission checklist
+## Submission record
 
-1. Record the under-three-minute video using the script above, including CockroachDB memory evidence and the deployed Lambda write path.
-2. Add the final video URL below, then copy the project description into Devpost.
+The Devpost submission was completed on 2026-07-19 with the public repository,
+functional demo, and YouTube video links below.
 
 ```text
 Repository URL: https://github.com/dlxeva/flowgrid-memory-runtime
 Demo URL: https://dlxeva.github.io/flowgrid-memory-runtime/
-Video URL: PENDING_RECORDING
+Video URL: https://youtu.be/Wcs3EQojEzE
 ```
 
 ## Rule reference
