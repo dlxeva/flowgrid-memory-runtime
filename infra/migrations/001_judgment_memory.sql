@@ -14,12 +14,15 @@ CREATE TABLE IF NOT EXISTS source_events (
   event_type STRING NOT NULL,
   actor STRING NOT NULL,
   content STRING NOT NULL,
+  content_hash STRING NOT NULL,
   authority STRING NOT NULL,
   occurred_at TIMESTAMPTZ NOT NULL,
   recorded_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   metadata JSONB NOT NULL DEFAULT '{}'::JSONB,
   UNIQUE (project_id, source_key)
 );
+
+ALTER TABLE source_events ADD COLUMN IF NOT EXISTS content_hash STRING;
 
 CREATE TABLE IF NOT EXISTS judgments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

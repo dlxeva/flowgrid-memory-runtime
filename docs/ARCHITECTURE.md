@@ -11,7 +11,7 @@ source event
   -> retrieve semantically related judgments
   -> inspect status, authority, rationale, and reversal condition
   -> write proposed revision when authority protects the active decision
-  -> apply a superseding decision only when qualifying evidence is present
+  -> apply a superseding decision only when a human reviewer attests qualifying evidence
 ```
 
 ## Runtime snapshot contract

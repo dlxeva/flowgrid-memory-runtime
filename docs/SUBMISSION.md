@@ -16,7 +16,7 @@ Agent memory that preserves what is still authorized to change a project.
 
 Long-running agents can retrieve context yet still mishandle project commitments: a new request can be treated as permission to overwrite an earlier human decision. FlowGrid Memory Runtime keeps a durable judgment lifecycle instead.
 
-Each confirmed judgment stores its rationale, reversal condition, source events, evidence links, and audit history. A conflicting request becomes a pending proposed revision. It cannot replace an active judgment until qualifying evidence satisfies the recorded reversal condition. When evidence does qualify, the runtime creates a new confirmed judgment, preserves the previous judgment as superseded history, updates the handoff frame, and records the transition.
+Each confirmed judgment stores its rationale, reversal condition, source events, evidence links, and audit history. A conflicting request becomes a pending proposed revision. It cannot replace an active judgment until a human reviewer submits high-authority evidence and explicitly attests that it satisfies the recorded reversal condition. The runtime enforces that authorization boundary, preserves the previous judgment as superseded history, updates the handoff frame, and records the transition.
 
 The demo follows one compact lifecycle:
 

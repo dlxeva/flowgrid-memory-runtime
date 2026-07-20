@@ -28,7 +28,7 @@ The runtime keeps application writes in the separately reviewed Lambda path. The
 - Data classification: synthetic demo data only; no FlowGrid ledger, user session, customer, or private evaluation data.
 - Tables created: `projects`, `source_events`, `judgments`, `proposed_revisions`, `evidence_links`, `handoffs`, `audit_events`, and `memory_embeddings`.
 - Vector evidence: `memory_embeddings` was created with a real CockroachDB vector index. The live schema reports `VECTOR INDEX memory_embeddings_project_id_embedding_idx (project_id, embedding vector_l2_ops)`. The runtime uses the matching L2 operator (`<->`). Its deterministic synthetic embeddings are unit-normalized, so L2 and cosine produce the same ranking while the live index can accelerate the query.
-- Lifecycle evidence: `D-001` is stored as `superseded`, `D-002` is stored as `confirmed`, `P-001` is stored as `applied`, and evidence links preserve the confirmation, request, supporting evidence, and invalidation relationships.
+- Lifecycle evidence: `D-001` is stored as `superseded`, `D-002` is stored as `confirmed`, `P-001` is stored as `applied`, and evidence links preserve the confirmation, request, human-verified supporting evidence, and invalidation relationships.
 - Handoff evidence: the active frame permits only the scoped test represented by `D-002` and retains `D-001` as superseded history.
 - Audit evidence: the persisted event sequence is `confirmed`, `revision_requested`, `evidence_applied`, and `superseded`.
 

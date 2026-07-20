@@ -1,4 +1,5 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { createHash } from "node:crypto";
 import pg from "pg";
 import { hasValidWriteToken } from "./auth.mjs";
 import { classifyRevision, deterministicEmbedding, vectorLiteral } from "./decision-rules.mjs";
@@ -43,15 +44,35 @@ function parseBody(event) {
 }
 
 async function recordSource(db, projectId, { sourceKey, eventType, actor, content, authority = "medium" }) {
-  const result = await db.query(
+  const contentHash = createHash("sha256").update(content).digest("hex");
+  const inserted = await db.query(
     `INSERT INTO source_events
-       (project_id, source_key, event_type, actor, content, authority, occurred_at)
-     VALUES ($1, $2, $3, $4, $5, $6, now())
-     ON CONFLICT (project_id, source_key) DO UPDATE SET content = excluded.content
+       (project_id, source_key, event_type, actor, content, content_hash, authority, occurred_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, now())
+     ON CONFLICT (project_id, source_key) DO NOTHING
      RETURNING id, source_key`,
-    [projectId, sourceKey, eventType, actor, content, authority],
+    [projectId, sourceKey, eventType, actor, content, contentHash, authority],
   );
-  return result.rows[0];
+  if (inserted.rows[0]) return inserted.rows[0];
+  const existing = await db.query(
+    `SELECT id, source_key, content, content_hash FROM source_events WHERE project_id = $1 AND source_key = $2`,
+    [projectId, sourceKey],
+  );
+  if (!existing.rows[0] || (existing.rows[0].content_hash && existing.rows[0].content_hash !== contentHash) || (!existing.rows[0].content_hash && existing.rows[0].content !== content)) {
+    throw new Error("source_key is immutable and cannot be reused for different content");
+  }
+  return existing.rows[0];
+}
+
+function humanVerifiedEvidence(value) {
+  return Boolean(
+    value &&
+    typeof value === "object" &&
+    typeof value.content === "string" && value.content.trim() &&
+    value.verification === "human_verified" &&
+    value.authority === "high" &&
+    typeof value.reviewedBy === "string" && value.reviewedBy.trim()
+  );
 }
 
 async function audit(db, projectId, eventType, artifactKey, detail) {
@@ -219,21 +240,22 @@ async function executeAction(db, project, body) {
               j.decision_key, j.title, j.authority
        FROM proposed_revisions r
        JOIN judgments j ON j.id = r.active_judgment_id
-       WHERE r.project_id = $1 AND r.revision_key = $2 AND r.status = 'pending'`,
+       WHERE r.project_id = $1 AND r.revision_key = $2 AND r.status = 'pending'
+       FOR UPDATE`,
       [project.id, body.revisionKey],
     );
     if (!revision.rows[0]) throw new Error("A pending revision is required before evidence can apply a change.");
-    if (classifyRevision({ hasQualifyingEvidence: Boolean(body.qualifyingEvidence) }) !== "apply") {
-      throw new Error("Qualifying evidence is required before a protected judgment can be superseded.");
+    if (!humanVerifiedEvidence(body.qualifyingEvidence) || classifyRevision({ hasQualifyingEvidence: true }) !== "apply") {
+      throw new Error("Human-verified qualifying evidence is required before a protected judgment can be superseded.");
     }
 
     const pending = revision.rows[0];
     const source = await recordSource(db, project.id, {
       sourceKey: body.sourceKey ?? `S-${Date.now()}`,
       eventType: "qualifying_evidence",
-      actor: body.actor ?? "External evidence",
-      content: body.qualifyingEvidence,
-      authority: body.authority ?? "high",
+      actor: body.qualifyingEvidence.reviewedBy,
+      content: body.qualifyingEvidence.content,
+      authority: body.qualifyingEvidence.authority,
     });
     const nextKey = body.nextDecisionKey ?? `${pending.decision_key}-rev`;
     const next = await db.query(
@@ -241,7 +263,7 @@ async function executeAction(db, project, body) {
          (project_id, decision_key, title, status, authority, rationale, reversal_condition)
        VALUES ($1, $2, $3, 'confirmed', $4, $5, $6)
        RETURNING id, decision_key`,
-      [project.id, nextKey, body.title ?? `Revision of ${pending.title}`, pending.authority,
+      [project.id, nextKey, body.title ?? `Revision of ${pending.title}`, body.qualifyingEvidence.authority,
        body.rationale ?? pending.proposal, body.nextReversalCondition ?? "Reopen if conversion evidence weakens."],
     );
     await db.query(
@@ -249,15 +271,29 @@ async function executeAction(db, project, body) {
        WHERE id = $1`,
       [pending.active_judgment_id, next.rows[0].id],
     );
-    await db.query(
+    const appliedRevision = await db.query(
       `UPDATE proposed_revisions SET status = 'applied', applied_judgment_id = $2, resolved_at = now()
-       WHERE id = $1`,
+       WHERE id = $1 AND status = 'pending'
+       RETURNING id`,
       [pending.id, next.rows[0].id],
     );
+    // A concurrent caller may have resolved this proposal after our lock was
+    // acquired but before the state transition is committed.
+    if (!appliedRevision.rows[0]) throw new Error("Revision was already resolved.");
     await db.query(
       `INSERT INTO evidence_links (project_id, source_event_id, judgment_id, relation)
        VALUES ($1, $2, $3, 'confirmed_by')`,
       [project.id, source.id, next.rows[0].id],
+    );
+    await db.query(
+      `INSERT INTO evidence_links (project_id, source_event_id, proposed_revision_id, relation)
+       VALUES ($1, $2, $3, 'supports')`,
+      [project.id, source.id, pending.id],
+    );
+    await db.query(
+      `INSERT INTO evidence_links (project_id, source_event_id, judgment_id, relation)
+       VALUES ($1, $2, $3, 'invalidates')`,
+      [project.id, source.id, pending.active_judgment_id],
     );
     await storeEmbedding(db, project.id, next.rows[0].id, `${body.title ?? pending.title}. ${body.rationale ?? pending.proposal}`);
     await db.query(
@@ -302,7 +338,13 @@ export function createHandler({ acquireClient = client, persistTrace = saveTrace
       await db.query("BEGIN");
       const result = await executeAction(db, project, body);
       await db.query("COMMIT");
-      await persistTrace(project.slug, body.action, result);
+      // The mutation is already committed. Trace delivery is best-effort so a
+      // transient S3 failure cannot falsely report a rejected state change.
+      try {
+        await persistTrace(project.slug, body.action, result);
+      } catch (traceError) {
+        console.warn("Trace persistence failed after committed mutation", traceError);
+      }
       return response(200, result);
     } catch (error) {
       await db.query("ROLLBACK").catch(() => {});

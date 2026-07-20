@@ -45,7 +45,12 @@ const applied = await request("POST", {
   revisionKey: "P-001",
   nextDecisionKey: "D-002",
   sourceKey: "S-003",
-  qualifyingEvidence: "Synthetic attributed conversion result demonstrates KOL fit.",
+  qualifyingEvidence: {
+    content: "Synthetic attributed conversion result demonstrates KOL fit.",
+    verification: "human_verified",
+    authority: "high",
+    reviewedBy: "Demo project owner"
+  },
   title: "Allow evidence-backed KOL promotion",
   rationale: "Synthetic conversion evidence satisfies D-001's reversal condition.",
 });
